@@ -55,12 +55,45 @@ class AlgoStrategy(gamelib.AlgoCore):
         game_state = gamelib.GameState(self.config, turn_state)
         gamelib.debug_write('Performing turn {} of your custom algo strategy'.format(game_state.turn_number))
         game_state.suppress_warnings(True)  #Comment or remove this line to enable warnings.
-
-        self.starter_strategy(game_state)
+        
+        # Executes our custom strategy
+        self.custom_strategy(game_state)
 
         game_state.submit_turn()
 
+    """
+    NOTE: This is where our algorithm begins, the code below is part of the provided starter-algo.    
+    """
 
+    def custom_strategy(self, game_state):
+        # Determine if anything needs to be rebuilt
+        self.execute_rebuild(game_state)
+        # Setup defenses
+        self.execute_defense(game_state)
+        # Setup attack
+        self.execute_attack(game_state)
+    
+    def execute_rebuild(self, game_state):
+        # Figures out if anything needs to be rebuilt
+        pass
+
+    def execute_defense(self, game_state):
+        # Calculate and execute defense stage
+        pass
+
+    
+    def execute_attack(self, game_state):
+        # Determines whether or not we will be attacking
+        attack = self.execute_attack_calculation(game_state)
+        if (attack):
+            # Do some placements of troops here
+            return
+
+    def execute_attack_calculation(game_state):
+        # Calculate attack related stuff here
+        pass
+
+    
     """
     NOTE: All the methods after this point are part of the sample starter-algo
     strategy and can safely be replaced for your custom algo.
@@ -231,6 +264,10 @@ class AlgoStrategy(gamelib.AlgoCore):
                 gamelib.debug_write("Got scored on at: {}".format(location))
                 self.scored_on_locations.append(location)
                 gamelib.debug_write("All locations: {}".format(self.scored_on_locations))
+
+class CustomStrategy:
+
+    def execute_turn():
 
 
 if __name__ == "__main__":
