@@ -43,6 +43,8 @@ class AlgoStrategy(gamelib.AlgoCore):
         SP = 0
         # This is a good place to do initial setup
         self.scored_on_locations = []
+        # Stores all of the places we have already built a structure in as [[x: int, y: int, type: str, upgraded: 0/1]]
+        self.built_structures = []
 
     def on_turn(self, turn_state):
         """
@@ -67,16 +69,34 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def custom_strategy(self, game_state):
         # Determine if anything needs to be rebuilt
-        self.execute_rebuild(game_state)
-        # Setup defenses
-        self.execute_defense(game_state)
+        structure_points_after_rebuild = self.execute_rebuild(game_state)
+        # Setup defenses if we have more than 1 structure point left
+        if structure_points_after_rebuild > 1:
+            self.execute_defense(game_state)
         # Setup attack
         self.execute_attack(game_state)
     
     def execute_rebuild(self, game_state):
-        # Figures out if anything needs to be rebuilt
-        pass
-
+        # Iterates through all of the built structures, checking if any of them need to be rebuilt
+        # List allows us to maintain the priority that everything should be rebuilt in the order that it was built
+        for structure in self.built_structures:
+            x = structure[0]
+            y = structure[1]
+            type = structure[2]
+            upgraded = structure[3]
+            # Attemps to spawn structure
+            game_state.attempt_spawn(type, [x, y], 1)
+            # Attempts to upgrade structure if it was previously upgraded
+            if upgraded:
+                game_state.attempt_upgrade([x, y])
+            # Gets own structure points, returns if we have 1 structure point left since that means we can't possibly do anything
+            remaining_structure_points = game_state.get_resource(0, 0)
+            if  remaining_structure_points <= 1:
+                # Returns number of structure points remaning
+                return remaining_structure_points
+        # Returns number of structure points remaining
+        return game_state.get_resource(0, 0)
+    
     def execute_defense(self, game_state):
         # Calculate and execute defense stage
         pass
@@ -264,11 +284,6 @@ class AlgoStrategy(gamelib.AlgoCore):
                 gamelib.debug_write("Got scored on at: {}".format(location))
                 self.scored_on_locations.append(location)
                 gamelib.debug_write("All locations: {}".format(self.scored_on_locations))
-
-class CustomStrategy:
-
-    def execute_turn():
-
 
 if __name__ == "__main__":
     algo = AlgoStrategy()
