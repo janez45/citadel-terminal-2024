@@ -131,28 +131,30 @@ class AlgoStrategy(gamelib.AlgoCore):
                         units = self[location]
                         for unit in units:
                             if unit.unit_type == 'TURRET':
-                                score += TURRET_POINTS # TODO: multiply by the percent of health remaining
+                                score += TURRET_POINTS*unit.health
                             elif unit.unit_type == 'UPGRADED_TURRET':
-                                score += UPGRADED_TURRET_POINTS # TODO: multiply by the percent of health remaining
+                                score += UPGRADED_TURRET_POINTS*unit.health
                             elif unit.unit_type == 'WALL':
-                                score += WALL_POINTS # TODO: multiply by the percent of health remaining
+                                score += WALL_POINTS*unit.health
             return score
 
-        # Define trapezoid vertices for left and right sides
-        left_trapezoid = [[0, 13], [9, 13], [9, 9], [4, 9]]
-        right_trapezoid = [[27, 13], [18, 13], [18, 9], [23, 9]]
+        # Define trapezoid vertices for left and right and center sides
+        left_trapezoid = [[0, 13], [8, 13], [8, 10], [3, 10]]
+        center_trapezoid = [[10, 7], [18, 7], [10, 13], [18, 13]]
+        right_trapezoid = [[27, 13], [24, 10], [19, 10], [19, 13]]
 
-        # Calculate scores for each trapezoid
         left_side_score = calculate_area_value(left_trapezoid)
+        center_side_score = calculate_area_value(center_trapezoid)
         right_side_score = calculate_area_value(right_trapezoid)
 
-        # Determine which side is weaker
-        if left_side_score < right_side_score:
-            return "left"
-        elif right_side_score < left_side_score:
-            return "right"
-        else:
-            return "left" # default to left
+        scores = [("L", left_side_score), ("C", center_side_score), ("R", right_side_score)]
+
+        sorted_scores = sorted(scores, key=lambda x: x[1])
+
+        ordered_labels = [label for label, _ in sorted_scores]
+
+        return ordered_labels
+        
 
     """
     NOTE: All the methods after this point are part of the sample starter-algo
