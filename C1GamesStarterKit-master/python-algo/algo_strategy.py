@@ -45,6 +45,13 @@ class AlgoStrategy(gamelib.AlgoCore):
         self.scored_on_locations = []
         # Stores all of the places we have already built a structure in as [[x: int, y: int, type: str, upgraded: 0/1]]
         self.built_structures = []
+        # The iteration number we are of the defense lineup
+        self.defense_iteration = 1
+        # Defense iteration order
+        self.defense_order = ["TURRET", "WALL", "FUNNEL", "SUPPORT"]
+        # The index of the current defense stage we are supposed to be at
+        self.intended_defense_stage = 0 
+
 
     def on_turn(self, turn_state):
         """
@@ -113,10 +120,47 @@ class AlgoStrategy(gamelib.AlgoCore):
         return game_state.get_resource(0, 0)
     
     def execute_defense(self, game_state):
-        # Calculate and execute defense stage
+        # Constants for determining the order of defense gameplay
+        current_defense_stage = self.intended_defense_stage
+        # 
+        intended_is_current = True
+        # NEED TO REPLACE
+        stockpiling = False
+        iterations = 0
+        # Iterates through defense moves until we have insufficient structure points to do anything
+        while (game_state.get_resource(0,0) >= 2) and iterations < 10:
+            # If only 2 structure points, we default to "WALL"
+            structure_points = game_state.get_resource(0,0)
+            if structure_points == 2:
+                current_defense_stage = 1
+                stage = "WALL"
+            elif stockpiling:
+                stage = "TURRET"
+            else:
+                stage = self.defense_order[current_defense_stage]
+            if stage == "TURRET":
+                succeeded = self.place_turrets(game_state)
+            elif stage == "WALL":
+                succeeded = self.place_walls(game_state)
+            elif stage == "FUNNEL":
+                succeeded = self.place_funnel(game_state)
+            else:
+                succeeded = self.place_support(game_state)
+            iterations += 1
+        gamelib.debug_write("HIT AN INFINITE LOOP ON DEFENSE ITERATIONS")
+
+    def place_turrets(self, game_state) -> bool:
         pass
 
-    
+    def place_walls(self, game_state) -> bool:
+        pass
+
+    def place_funnel(self, game_state) -> bool:
+        pass
+
+    def place_support(self, game_state) -> bool:
+        pass
+
     def execute_attack(self, game_state):
         # Determines whether or not we will be attacking
         attack = self.execute_attack_calculation(game_state)
