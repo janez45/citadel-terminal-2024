@@ -68,14 +68,29 @@ class AlgoStrategy(gamelib.AlgoCore):
     """
 
     def custom_strategy(self, game_state):
-        # Determine if anything needs to be rebuilt
-        structure_points_after_rebuild = self.execute_rebuild(game_state)
-        # Setup defenses if we have more than 1 structure point left
-        if structure_points_after_rebuild > 1:
-            self.execute_defense(game_state)
+        # Execute setup if this is the first turn
+        if game_state.turn_number == 1:
+            self.execute_setup_formation(game_state)
+        else:
+            # Determine if anything needs to be rebuilt
+            structure_points_after_rebuild = self.execute_rebuild(game_state)
+            # Setup defenses if we have more than 1 structure point left
+            if structure_points_after_rebuild > 1:
+                self.execute_defense(game_state)
         # Setup attack
         self.execute_attack(game_state)
     
+    def execute_setup_formation(self, game_state):
+        turrets = [[14,11], [4,12], [23, 12]]
+        walls = [[13,12], [15,12], [3,13], [5,13], [22, 13], [24, 13], [0,13], [27,13]]
+        for turret in turrets:
+            game_state.attempt_spawn(TURRET, [turret], 1)
+            game_state.attempt_upgrade([turret])
+            self.built_structures.append(turret[0], turret[1], TURRET, 1)
+        for wall in walls:
+            game_state.attempt_spawn(WALL, [wall], 1)
+            self.built_structures.append(wall[0], wall[1], WALL, 0)
+
     def execute_rebuild(self, game_state):
         # Iterates through all of the built structures, checking if any of them need to be rebuilt
         # List allows us to maintain the priority that everything should be rebuilt in the order that it was built
