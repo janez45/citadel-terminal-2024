@@ -171,8 +171,70 @@ class AlgoStrategy(gamelib.AlgoCore):
     def execute_attack_calculation(game_state):
         # Calculate attack related stuff here
         pass
-
     
+    def is_enemy_stockpiling(self):
+        # Determine if the enemy is stockpiling (set to hard MP value)
+        # TODO (julialding): if needed, calibrate a calculation for MP AND SP
+        if self.get_resource(MP, 1) >= 8.5:
+            return True
+        return False
+    
+    def which_side_weaker(self):
+        # TODO: calibrate
+        TURRET_POINTS = 3
+        UPGRADED_TURRET_POINTS = 8
+        WALL_POINTS = 2
+
+        def is_within_trapezoid(location, trapezoid):
+            """ Checks if the given location is within the specified trapezoid. """
+            x, y = location
+            def is_point_in_trapezoid(x, y, trapezoid):
+                def sign(p1, p2, p3):
+                    return (p1[0] - p3[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p3[1])
+                
+                b1 = sign([x, y], trapezoid[0], trapezoid[1]) < 0.0
+                b2 = sign([x, y], trapezoid[1], trapezoid[2]) < 0.0
+                b3 = sign([x, y], trapezoid[2], trapezoid[3]) < 0.0
+                b4 = sign([x, y], trapezoid[3], trapezoid[0]) < 0.0
+                
+                return ((b1 == b2) and (b2 == b3) and (b3 == b4))
+            
+            return is_point_in_trapezoid(x, y, trapezoid)
+
+        def calculate_area_value(trapezoid):
+            score = 0
+            for x in range(0, self.ARENA_SIZE):
+                for y in range(0, self.ARENA_SIZE):
+                    location = [x, y]
+                    if self.in_arena_bounds(location) and is_within_trapezoid(location, trapezoid):
+                        units = self[location]
+                        for unit in units:
+                            if unit.unit_type == 'TURRET':
+                                score += TURRET_POINTS*unit.health
+                            elif unit.unit_type == 'UPGRADED_TURRET':
+                                score += UPGRADED_TURRET_POINTS*unit.health
+                            elif unit.unit_type == 'WALL':
+                                score += WALL_POINTS*unit.health
+            return score
+
+        # Define trapezoid vertices for left and right and center sides
+        left_trapezoid = [[0, 13], [8, 13], [8, 10], [3, 10]]
+        center_trapezoid = [[10, 7], [18, 7], [10, 13], [18, 13]]
+        right_trapezoid = [[27, 13], [24, 10], [19, 10], [19, 13]]
+
+        left_side_score = calculate_area_value(left_trapezoid)
+        center_side_score = calculate_area_value(center_trapezoid)
+        right_side_score = calculate_area_value(right_trapezoid)
+
+        scores = [("L", left_side_score), ("C", center_side_score), ("R", right_side_score)]
+
+        sorted_scores = sorted(scores, key=lambda x: x[1])
+
+        ordered_labels = [label for label, _ in sorted_scores]
+
+        return ordered_labels
+        
+
     """
     NOTE: All the methods after this point are part of the sample starter-algo
     strategy and can safely be replaced for your custom algo.
