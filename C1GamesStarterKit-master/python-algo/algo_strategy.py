@@ -94,7 +94,7 @@ class AlgoStrategy(gamelib.AlgoCore):
 
                 ],
                 "C": [
-                    
+
                 ]
             }
         }
@@ -269,7 +269,7 @@ class AlgoStrategy(gamelib.AlgoCore):
             # Setup defenses if we have more than 1 structure point left
             if structure_points_after_rebuild > 1:
                 self.execute_defense(game_state)
-        # Setup attack
+        # Execute attack
         self.execute_attack(game_state)
     
     def execute_setup_formation(self, game_state):
@@ -408,14 +408,22 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def execute_attack(self, game_state):
         # Determines whether or not we will be attacking
-        attack = self.execute_attack_calculation(game_state)
+        attack, attack_left_side, number_of_troops = self.execute_attack_calculation(game_state)
+        # Attacks if true
         if (attack):
-            # Do some placements of troops here
-            return
+            # Determines coords for attacking depending if we are attack L or R
+            if attack_left_side:
+                # Spawns on bottom right so they attack left
+                spawn_coords = [14, 0]
+            else:
+                # Spawns on bottom left so they attack right
+                spawn_coords = [13, 0]
+            # Spawns scouts
+            game_state.attempt_spawn(spawn_coords[0], spawn_coords[1], SCOUT, number_of_troops)
 
     def execute_attack_calculation(game_state):
         # Calculate attack related stuff here
-        pass
+        return False, False, 0
     
     def is_enemy_stockpiling(self):
         # Determine if the enemy is stockpiling (set to hard MP value)
