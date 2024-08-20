@@ -52,188 +52,177 @@ class AlgoStrategy(gamelib.AlgoCore):
         # The index of the current defense stage we are supposed to be at
         self.intended_defense_stage = 0 
         # Stores the map of formations by priority and side
+        # List description: [x, y, TYPE, upgraded]
+        # To understand the placements strategy, play through doing all turns 1 for LRC turret, then wall, then funnel, then support, and then playing through for turns 2-4
+        # Follow the co-ordinates to figure out where something is being placed
         self.turret_formations = {
             1 : {
                 "L" : [
-
+                    [5, 12, TURRET, 1]   
                 ],
                 "R" : [
-
+                    [22, 12, TURRET, 1]
                 ],
-                "C": [
-
-                ]
+                "C": []
             },
             2 : {
                 "L" : [
-
+                    [5, 11, TURRET, 1]
                 ],
                 "R" : [
-
+                    [22, 11, TURRET, 1]
                 ],
-                "C": [
-
-                ]
+                "C": []
             },
             3 : {
                 "L" : [
-
+                    [5, 10, TURRET, 1]
                 ],
                 "R" : [
-                    
+                    [22, 10, TURRET, 1]
                 ],
-                "C": [
-
-                ]
+                "C": []
             },
             4 : {
                 "L" : [
-
+                    [3, 12, TURRET, 1]
                 ],
                 "R" : [
-
+                    [24, 12, TURRET, 1]
                 ],
-                "C": [
-
-                ]
+                "C": []
             }
         }
         self.wall_formations = {
             1 : {
                 "L" : [
-
+                    [2, 13, WALL, 0],
+                    [1, 13, WALL, 0],
+                    [4, 13, WALL, 0],
+                    [6, 13, WALL, 0],
+                    [6, 12, WALL, 0]
                 ],
                 "R" : [
-
+                    [25, 13, WALL, 0],
+                    [26, 13, WALL, 0],
+                    [23, 13, WALL, 0],
+                    [20, 13, WALL, 0],
+                    [20, 12, WALL, 0],
                 ],
-                "C": [
-                    
-                ]
+                "C": []
             },
             2 : {
                 "L" : [
-
+                    [6, 11, WALL, 0],
+                    [6, 13, WALL, 1],
+                    [5, 13, WALL, 1],
+                    [6, 12, WALL, 1],
                 ],
                 "R" : [
-
+                    [21, 11, WALL, 0],
+                    [21, 13, WALL, 1],
+                    [22, 13, WALL, 1],
+                    [31, 12, WALL, 1]
                 ],
-                "C": [
-
-                ]
+                "C": []
             },
             3 : {
                 "L" : [
-
+                    [6, 10, WALL, 0],
+                    [6, 11, WALL, 1]
                 ],
                 "R" : [
-
+                    [21, 10, WALL, 0],
+                    [21, 11, WALL, 1]
                 ],
-                "C": [
-
-                ]
+                "C": []
             },
             4 : {
                 "L" : [
-
+                    [6, 10, WALL, 1]
                 ],
                 "R" : [
-
+                    [21, 10, WALL, 0]
                 ],
-                "C": [
-
-                ]
+                "C": []
             }
         }
         self.funnel_formations = {
             1 : {
                 "L" : [
-
+                    [9, 12, WALL, 0]
                 ],
-                "R" : [
-
-                ],
-                "C": [
-
-                ]
+                "R" : [],
+                "C": []
             },
             2 : {
                 "L" : [
-
+                    [13, 12, WALL, 1]
                 ],
                 "R" : [
-
+                    [15, 12, WALL, 1]
                 ],
-                "C": [
-
-                ]
+                "C": []
             },
             3 : {
                 "L" : [
-
+                    [12, 12, WALL, 0]
                 ],
                 "R" : [
-                    
+                    [16, 12, WALL, 0]
                 ],
                 "C": [
-
+                    [9, 12, WALL, 1]
                 ]
             },
             4 : {
                 "L" : [
-
+                    [12, 12, WALL, 1],
+                    [11, 11, WALL, 1]
                 ],
                 "R" : [
-
+                    [16, 12, WALL, 1],
+                    [17, 11, WALL, 1]
                 ],
-                "C": [
-
-                ]
+                "C": []
             }
         }
         self.support_formations = {
             1 : {
                 "L" : [
-
+                    [13, 2, SUPPORT, 0]
                 ],
                 "R" : [
-                    
+                    [14, 2, SUPPORT, 1]
                 ],
-                "C": [
-
-                ]
+                "C": []
             },
             2 : {
                 "L" : [
-
+                    [13, 2, SUPPORT, 1]
                 ],
                 "R" : [
-
+                    [14, 2, SUPPORT, 1]
                 ],
-                "C": [
-
-                ]
+                "C": []
             },
             3 : {
                 "L" : [
-
+                    [13, 3, SUPPORT, 0]
                 ],
                 "R" : [
-
+                    [14, 3, SUPPORT, 0]
                 ],
-                "C": [
-
-                ]
+                "C": []
             },
             4 : {
                 "L" : [
-
+                    [13, 3, SUPPORT, 1]
                 ],
                 "R" : [
-
+                    [14, 3, SUPPORT, 1]
                 ],
-                "C": [
-
-                ]
+                "C": []
             }
         }
 
