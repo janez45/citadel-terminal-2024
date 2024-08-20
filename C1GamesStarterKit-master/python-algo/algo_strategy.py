@@ -122,18 +122,21 @@ class AlgoStrategy(gamelib.AlgoCore):
     def execute_defense(self, game_state):
         # Constants for determining the order of defense gameplay
         current_defense_stage = self.intended_defense_stage
+        current_turn_iteration = self.defense_iteration
         # This variable keeps track of whether the intended and the current stage is the same
         # If true, all stage have succeeded
         # If false, we are off cycle because we have failed a stage and skipped a couple to spend points as we did not have enough points for some previous stage
         off_cycle = False
         # NEED TO REPLACE
-        stockpiling = False
-        iterations = 0
-        # Iterates through defense moves until we have insufficient structure points to do anything
-        while (game_state.get_resource(0,0) >= 2) and iterations < 10:
+        stockpiling = self.is_enemy_stockpiling()
+        turns = 0
+        # Iterates through defense moves until we have insufficient structure points to do anything or we hit an infinite loop
+        while (game_state.get_resource(0,0) >= 2) and turns < 10:
             # If only 2 structure points, we default to "WALL"
             structure_points = game_state.get_resource(0,0)
-            
+            # Stores which upgrades are priority, ["L", "R", "C"] in some order
+            side_priorities = [side_denominator[0] for side_denominator in self.which_side_weaker()]
+            # Determines which stage to default to, first priority is walls with two points left, then turrets if stockpiling, and then intended order
             if structure_points == 2:
                 current_defense_stage = 1
                 stage = "WALL"
@@ -142,29 +145,39 @@ class AlgoStrategy(gamelib.AlgoCore):
             else:
                 stage = self.defense_order[current_defense_stage]
             if stage == "TURRET":
-                succeeded = self.place_turrets(game_state)
+                succeeded = self.place_turrets(game_state, side_priorities, current_turn_iteration)
             elif stage == "WALL":
-                succeeded = self.place_walls(game_state)
+                succeeded = self.place_walls(game_state, side_priorities, current_turn_iteration)
             elif stage == "FUNNEL":
-                succeeded = self.place_funnel(game_state)
+                succeeded = self.place_funnel(game_state, side_priorities, current_turn_iteration)
             else:
-                succeeded = self.place_support(game_state)
-            iterations += 1
+                succeeded = self.place_support(game_state, side_priorities, current_turn_iteration)
+            # Adds that a turn was completed
+            turns += 1
+            # Adds that a stage was advanced, modulo 4 since the last stage index is 3
+            current_defense_stage = (current_defense_stage + 1) % 4
+            # If we reset to 0, increase the turn iteration by 1 too
+            if current_defense_stage == 0:
+                current_turn_iteration += 1
+            # If it did not succeed, indicate that we are going off cycle
+            if not succeeded:
+                off_cycle = True
+            # If we are still on cycle, update the intended defense constants and the current defense constants to match
             if not off_cycle:
-
-                
+                self.intended_defense_stage = current_defense_stage
+                self.defense_iteration = current_turn_iteration  
         gamelib.debug_write("HIT AN INFINITE LOOP ON DEFENSE ITERATIONS")
 
-    def place_turrets(self, game_state) -> bool:
+    def place_turrets(self, game_state, side_priorities) -> bool:
         pass
 
-    def place_walls(self, game_state) -> bool:
+    def place_walls(self, game_state, side_priorities) -> bool:
         pass
 
-    def place_funnel(self, game_state) -> bool:
+    def place_funnel(self, game_state, side_priorities) -> bool:
         pass
 
-    def place_support(self, game_state) -> bool:
+    def place_support(self, game_state, side_priorities) -> bool:
         pass
 
     def execute_attack(self, game_state):
