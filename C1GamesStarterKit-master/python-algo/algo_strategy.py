@@ -122,8 +122,10 @@ class AlgoStrategy(gamelib.AlgoCore):
     def execute_defense(self, game_state):
         # Constants for determining the order of defense gameplay
         current_defense_stage = self.intended_defense_stage
-        # 
-        intended_is_current = True
+        # This variable keeps track of whether the intended and the current stage is the same
+        # If true, all stage have succeeded
+        # If false, we are off cycle because we have failed a stage and skipped a couple to spend points as we did not have enough points for some previous stage
+        off_cycle = False
         # NEED TO REPLACE
         stockpiling = False
         iterations = 0
@@ -131,6 +133,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         while (game_state.get_resource(0,0) >= 2) and iterations < 10:
             # If only 2 structure points, we default to "WALL"
             structure_points = game_state.get_resource(0,0)
+            
             if structure_points == 2:
                 current_defense_stage = 1
                 stage = "WALL"
@@ -147,6 +150,9 @@ class AlgoStrategy(gamelib.AlgoCore):
             else:
                 succeeded = self.place_support(game_state)
             iterations += 1
+            if not off_cycle:
+
+                
         gamelib.debug_write("HIT AN INFINITE LOOP ON DEFENSE ITERATIONS")
 
     def place_turrets(self, game_state) -> bool:
