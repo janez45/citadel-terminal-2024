@@ -310,7 +310,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         # If false, we are off cycle because we have failed a stage and skipped a couple to spend points as we did not have enough points for some previous stage
         off_cycle = False
         # Stores stockpiling
-        stockpiling = self.is_enemy_stockpiling()
+        stockpiling = self.is_enemy_stockpiling(game_state)
         # Number of turns taken
         turns = 0
         # Iterates through defense moves until we have insufficient structure points to do anything or we hit an infinite loop or we reach a state where we have maxed out defense (after 4 turns)
@@ -318,7 +318,7 @@ class AlgoStrategy(gamelib.AlgoCore):
             # If only 2 structure points, we default to "WALL"
             structure_points = game_state.get_resource(0,0)
             # Stores which upgrades are priority, ["L", "R", "C"] in some order
-            side_priorities = [side_denominator[0] for side_denominator in self.which_side_weaker()]
+            side_priorities = [side_denominator[0] for side_denominator in self.which_side_weaker(game_state)]
             # Determines which stage to default to, first priority is walls with two points left, then turrets if stockpiling, and then intended order
             if structure_points == 2:
                 current_defense_stage = 1
@@ -414,14 +414,14 @@ class AlgoStrategy(gamelib.AlgoCore):
         # Calculate attack related stuff here
         return False, False, 0
     
-    def is_enemy_stockpiling(self):
+    def is_enemy_stockpiling(self, game_state):
         # Determine if the enemy is stockpiling (set to hard MP value)
         # TODO (julialding): if needed, calibrate a calculation for MP AND SP
-        if self.get_resource(MP, 1) >= 8.5:
+        if game_state.get_resource(MP, 1) >= 8.5:
             return True
         return False
     
-    def which_side_weaker(self):
+    def which_side_weaker(self, game_state):
         # TODO: calibrate
         TURRET_POINTS = 3
         UPGRADED_TURRET_POINTS = 8
@@ -443,13 +443,13 @@ class AlgoStrategy(gamelib.AlgoCore):
             
             return is_point_in_trapezoid(x, y, trapezoid)
 
-        def calculate_area_value(trapezoid):
+        def calculate_area_value(trapezoid, game_state):
             score = 0
-            for x in range(0, self.ARENA_SIZE):
-                for y in range(0, self.ARENA_SIZE):
+            for x in range(game_state.ARENA_SIZE):
+                for y in range(game_state.ARENA_SIZE):
                     location = [x, y]
-                    if self.in_arena_bounds(location) and is_within_trapezoid(location, trapezoid):
-                        units = self[location]
+                    if is_within_trapezoid(location, trapezoid):
+                        units = game_state.game_map[x, y]
                         for unit in units:
                             if unit.unit_type == 'TURRET':
                                 score += TURRET_POINTS*unit.health
@@ -464,9 +464,9 @@ class AlgoStrategy(gamelib.AlgoCore):
         center_trapezoid = [[10, 7], [18, 7], [10, 13], [18, 13]]
         right_trapezoid = [[27, 13], [24, 10], [19, 10], [19, 13]]
 
-        left_side_score = calculate_area_value(left_trapezoid)
-        center_side_score = calculate_area_value(center_trapezoid)
-        right_side_score = calculate_area_value(right_trapezoid)
+        left_side_score = calculate_area_value(left_trapezoid, game_state)
+        center_side_score = calculate_area_value(center_trapezoid, game_state)
+        right_side_score = calculate_area_value(right_trapezoid, game_state)
 
         scores = [("L", left_side_score), ("C", center_side_score), ("R", right_side_score)]
 
