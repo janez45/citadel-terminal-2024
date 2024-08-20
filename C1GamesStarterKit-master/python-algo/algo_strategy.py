@@ -52,10 +52,190 @@ class AlgoStrategy(gamelib.AlgoCore):
         # The index of the current defense stage we are supposed to be at
         self.intended_defense_stage = 0 
         # Stores the map of formations by priority and side
-        self.turret_formations = {}
-        self.wall_formations = {}
-        self.funnel_formations = {}
-        self.support_formations = {}
+        self.turret_formations = {
+            1 : {
+                "L" : [
+
+                ],
+                "R" : [
+
+                ],
+                "C": [
+
+                ]
+            },
+            2 : {
+                "L" : [
+
+                ],
+                "R" : [
+
+                ],
+                "C": [
+
+                ]
+            },
+            3 : {
+                "L" : [
+
+                ],
+                "R" : [
+                    
+                ],
+                "C": [
+
+                ]
+            },
+            4 : {
+                "L" : [
+
+                ],
+                "R" : [
+
+                ],
+                "C": [
+                    
+                ]
+            }
+        }
+        self.wall_formations = {
+            1 : {
+                "L" : [
+
+                ],
+                "R" : [
+
+                ],
+                "C": [
+                    
+                ]
+            },
+            2 : {
+                "L" : [
+
+                ],
+                "R" : [
+
+                ],
+                "C": [
+
+                ]
+            },
+            3 : {
+                "L" : [
+
+                ],
+                "R" : [
+
+                ],
+                "C": [
+
+                ]
+            },
+            4 : {
+                "L" : [
+
+                ],
+                "R" : [
+
+                ],
+                "C": [
+
+                ]
+            }
+        }
+        self.funnel_formations = {
+            1 : {
+                "L" : [
+
+                ],
+                "R" : [
+
+                ],
+                "C": [
+
+                ]
+            },
+            2 : {
+                "L" : [
+
+                ],
+                "R" : [
+
+                ],
+                "C": [
+
+                ]
+            },
+            3 : {
+                "L" : [
+
+                ],
+                "R" : [
+                    
+                ],
+                "C": [
+
+                ]
+            },
+            4 : {
+                "L" : [
+
+                ],
+                "R" : [
+
+                ],
+                "C": [
+
+                ]
+            }
+        }
+        self.support_formations = {
+            1 : {
+                "L" : [
+
+                ],
+                "R" : [
+                    
+                ],
+                "C": [
+
+                ]
+            },
+            2 : {
+                "L" : [
+
+                ],
+                "R" : [
+
+                ],
+                "C": [
+
+                ]
+            },
+            3 : {
+                "L" : [
+
+                ],
+                "R" : [
+
+                ],
+                "C": [
+
+                ]
+            },
+            4 : {
+                "L" : [
+
+                ],
+                "R" : [
+
+                ],
+                "C": [
+
+                ]
+            }
+        }
 
 
     def on_turn(self, turn_state):
@@ -93,20 +273,27 @@ class AlgoStrategy(gamelib.AlgoCore):
         self.execute_attack(game_state)
     
     def execute_setup_formation(self, game_state):
+        # Setup locations for all turrets
         turrets = [[14,11], [4,12], [23, 12]]
+        # Setup locations for all walls
         walls = [[13,12], [15,12], [3,13], [5,13], [22, 13], [24, 13], [0,13], [27,13]]
+        # Spawns all turrets
         for turret in turrets:
             game_state.attempt_spawn(TURRET, [turret], 1)
             game_state.attempt_upgrade([turret])
-            self.built_structures.append(turret[0], turret[1], TURRET, 1)
+            # Adds structures to built structures, in upgraded form
+            self.built_structures.append([turret[0], turret[1], TURRET, 1])
+        # Spawns all walls
         for wall in walls:
             game_state.attempt_spawn(WALL, [wall], 1)
-            self.built_structures.append(wall[0], wall[1], WALL, 0)
+            # Adds structures to built structures, in non-upgraded form
+            self.built_structures.append([wall[0], wall[1], WALL, 0])
 
     def execute_rebuild(self, game_state):
         # Iterates through all of the built structures, checking if any of them need to be rebuilt
         # List allows us to maintain the priority that everything should be rebuilt in the order that it was built
         for structure in self.built_structures:
+            # Parses parameters
             x = structure[0]
             y = structure[1]
             type = structure[2]
@@ -118,7 +305,8 @@ class AlgoStrategy(gamelib.AlgoCore):
                 game_state.attempt_upgrade([x, y])
             # Gets own structure points, returns if we have 1 structure point left since that means we can't possibly do anything
             remaining_structure_points = game_state.get_resource(0, 0)
-            if  remaining_structure_points <= 1:
+            # Returns out if one point or less left
+            if remaining_structure_points <= 1:
                 # Returns number of structure points remaning
                 return remaining_structure_points
         # Returns number of structure points remaining
@@ -132,8 +320,9 @@ class AlgoStrategy(gamelib.AlgoCore):
         # If true, all stage have succeeded
         # If false, we are off cycle because we have failed a stage and skipped a couple to spend points as we did not have enough points for some previous stage
         off_cycle = False
-        # NEED TO REPLACE
+        # Stores stockpiling
         stockpiling = self.is_enemy_stockpiling()
+        # Number of turns taken
         turns = 0
         # Iterates through defense moves until we have insufficient structure points to do anything or we hit an infinite loop or we reach a state where we have maxed out defense (after 4 turns)
         while (game_state.get_resource(0,0) >= 2) and turns < 10 and current_turn_iteration <= 4:
@@ -149,18 +338,32 @@ class AlgoStrategy(gamelib.AlgoCore):
                 stage = "TURRET"
             else:
                 stage = self.defense_order[current_defense_stage]
+            # Turret stage
             if stage == "TURRET":
+                # Places turrets
                 succeeded = self.place_defenses(game_state, side_priorities, self.turret_formations[current_turn_iteration])
+                # Points to defense stage WALL
+                current_defense_stage = 1
+            # Wall stage
             elif stage == "WALL":
+                # Places walls
                 succeeded = self.place_defenses(game_state, side_priorities, self.wall_formations[current_turn_iteration])
+                # Points to defense stage FUNNEL
+                current_defense_stage = 2
+            # Funnel stage
             elif stage == "FUNNEL":
+                # Places funnel
                 succeeded = self.place_defenses(game_state, side_priorities, self.funnel_formations[current_turn_iteration])
+                # Points to defense stage SUPPORT
+                current_defense_stage = 3
+            # Support stage
             else:
+                # Places support
                 succeeded = self.place_defenses(game_state, side_priorities, self.support_formations[current_turn_iteration])
+                # Points to defense stage TURRET
+                current_defense_stage = 0
             # Adds that a turn was completed
             turns += 1
-            # Adds that a stage was advanced, modulo 4 since the last stage index is 3
-            current_defense_stage = (current_defense_stage + 1) % 4
             # If we reset to 0, increase the turn iteration by 1 too
             if current_defense_stage == 0:
                 current_turn_iteration += 1
@@ -171,7 +374,9 @@ class AlgoStrategy(gamelib.AlgoCore):
             if not off_cycle:
                 self.intended_defense_stage = current_defense_stage
                 self.defense_iteration = current_turn_iteration  
-        gamelib.debug_write("HIT AN INFINITE LOOP ON DEFENSE ITERATIONS")
+        # If an infinite loop was hit, print a statement for debuggability
+        if turns == 10:
+            gamelib.debug_write("HIT AN INFINITE LOOP ON DEFENSE ITERATIONS")
 
     def place_defenses(self, game_state, side_priorities, formation) -> bool:
         # Stores whether or not all of the moves so far have been succeeded
@@ -184,14 +389,18 @@ class AlgoStrategy(gamelib.AlgoCore):
             # Tuple = [x, y, TYPE, upgraded (0,1)]
             for defense_tuple in list_of_defenses:
                 upgraded = defense_tuple[3]
-                # Attempts to spawn/update
-                if upgraded == 0:
-                    move_status = game_state.attempt_spawn(defense_tuple[2], [defense_tuple[0], defense_tuple[1]], 1)
-                else:
+                # Attempts to spawn/update in different ways depending on whether or not we need an upgraded version of the structure
+                if upgraded:
+                    game_state.attempt_spawn(defense_tuple[2], [defense_tuple[0], defense_tuple[1]], 1)
                     move_status = game_state.attempt_upgrade([defense_tuple[0], defense_tuple[1]])
+                else:
+                    move_status = game_state.attempt_spawn(defense_tuple[2], [defense_tuple[0], defense_tuple[1]], 1)
                 # Removes move from list if it has succeeded
                 if move_status:
+                    # Removes thing from list of defenses
                     list_of_defenses.remove(defense_tuple)
+                    # Appends [x, y, TYPE, upgraded]
+                    self.built_structures.append([defense_tuple[0], defense_tuple[1], defense_tuple[2], defense_tuple[3]])
                 # Changes var to False if otherwise
                 else:
                     succeeded = False
