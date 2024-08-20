@@ -51,6 +51,11 @@ class AlgoStrategy(gamelib.AlgoCore):
         self.defense_order = ["TURRET", "WALL", "FUNNEL", "SUPPORT"]
         # The index of the current defense stage we are supposed to be at
         self.intended_defense_stage = 0 
+        # Stores the map of formations by priority and side
+        self.turret_formations = {}
+        self.wall_formations = {}
+        self.funnel_formations = {}
+        self.support_formations = {}
 
 
     def on_turn(self, turn_state):
@@ -130,8 +135,8 @@ class AlgoStrategy(gamelib.AlgoCore):
         # NEED TO REPLACE
         stockpiling = self.is_enemy_stockpiling()
         turns = 0
-        # Iterates through defense moves until we have insufficient structure points to do anything or we hit an infinite loop
-        while (game_state.get_resource(0,0) >= 2) and turns < 10:
+        # Iterates through defense moves until we have insufficient structure points to do anything or we hit an infinite loop or we reach a state where we have maxed out defense (after 4 turns)
+        while (game_state.get_resource(0,0) >= 2) and turns < 10 and current_turn_iteration <= 4:
             # If only 2 structure points, we default to "WALL"
             structure_points = game_state.get_resource(0,0)
             # Stores which upgrades are priority, ["L", "R", "C"] in some order
@@ -145,13 +150,13 @@ class AlgoStrategy(gamelib.AlgoCore):
             else:
                 stage = self.defense_order[current_defense_stage]
             if stage == "TURRET":
-                succeeded = self.place_turrets(game_state, side_priorities, current_turn_iteration)
+                succeeded = self.place_defenses(game_state, side_priorities, self.turret_formations[current_turn_iteration])
             elif stage == "WALL":
-                succeeded = self.place_walls(game_state, side_priorities, current_turn_iteration)
+                succeeded = self.place_defenses(game_state, side_priorities, self.wall_formations[current_turn_iteration])
             elif stage == "FUNNEL":
-                succeeded = self.place_funnel(game_state, side_priorities, current_turn_iteration)
+                succeeded = self.place_defenses(game_state, side_priorities, self.funnel_formations[current_turn_iteration])
             else:
-                succeeded = self.place_support(game_state, side_priorities, current_turn_iteration)
+                succeeded = self.place_defenses(game_state, side_priorities, self.support_formations[current_turn_iteration])
             # Adds that a turn was completed
             turns += 1
             # Adds that a stage was advanced, modulo 4 since the last stage index is 3
@@ -168,17 +173,29 @@ class AlgoStrategy(gamelib.AlgoCore):
                 self.defense_iteration = current_turn_iteration  
         gamelib.debug_write("HIT AN INFINITE LOOP ON DEFENSE ITERATIONS")
 
-    def place_turrets(self, game_state, side_priorities) -> bool:
-        pass
-
-    def place_walls(self, game_state, side_priorities) -> bool:
-        pass
-
-    def place_funnel(self, game_state, side_priorities) -> bool:
-        pass
-
-    def place_support(self, game_state, side_priorities) -> bool:
-        pass
+    def place_defenses(self, game_state, side_priorities, formation) -> bool:
+        # Stores whether or not all of the moves so far have been succeeded
+        succeeded = True
+        # Iterates through all of the moves, in the order of the side priorities
+        for side in side_priorities:
+            # Gets the list of defenses to place for that side
+            list_of_defenses = formation[side]
+            # Parses each defense, attempting to place it
+            # Tuple = [x, y, TYPE, upgraded (0,1)]
+            for defense_tuple in list_of_defenses:
+                upgraded = defense_tuple[3]
+                # Attempts to spawn/update
+                if upgraded == 0:
+                    move_status = game_state.attempt_spawn(defense_tuple[2], [defense_tuple[0], defense_tuple[1]], 1)
+                else:
+                    move_status = game_state.attempt_upgrade([defense_tuple[0], defense_tuple[1]])
+                # Removes move from list if it has succeeded
+                if move_status:
+                    list_of_defenses.remove(defense_tuple)
+                # Changes var to False if otherwise
+                else:
+                    succeeded = False
+        return succeeded
 
     def execute_attack(self, game_state):
         # Determines whether or not we will be attacking
