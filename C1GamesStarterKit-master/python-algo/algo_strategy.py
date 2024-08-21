@@ -440,6 +440,9 @@ class AlgoStrategy(gamelib.AlgoCore):
         attack_left_start_coordinates = [14,0]
         attack_right_start_coordinates = [13,0]
 
+        enemy_structure_points = game_state.get_resource(SP, 1)
+        overload = 6 if enemy_structure_points >= 8 else 3 if enemy_structure_points >= 3 else 0
+
         survivable_L, remaining_troops_L, structure_destruction_score_L = self.can_breach_enemy(attack_left_start_coordinates, game_state)
         survivable_R, remaining_troops_R, structure_destruction_score_R = self.can_breach_enemy(attack_right_start_coordinates, game_state)
 
@@ -455,27 +458,27 @@ class AlgoStrategy(gamelib.AlgoCore):
             if survivable_R:
                 if remaining_troops_L > remaining_troops_R:
                     gamelib.debug_write("Attacking left")
-                    return (True, True, num_troops) if remaining_troops_L >= 3 else (False, False, 0)
+                    return (True, True, num_troops) if remaining_troops_L > overload else (False, False, 0)
                 elif remaining_troops_L < remaining_troops_R:
                     gamelib.debug_write("Attacking right")
-                    return (True, False, num_troops) if remaining_troops_R >= 3 else (False, False, 0)
+                    return (True, False, num_troops) if remaining_troops_R > overload else (False, False, 0)
                 else:
                     if structure_destruction_score_L > structure_destruction_score_R:
                         gamelib.debug_write("Attacking left")
-                        return (True, True, num_troops) if remaining_troops_L >= 3 else (False, False, 0)
+                        return (True, True, num_troops) if remaining_troops_L > overload else (False, False, 0)
                     elif structure_destruction_score_L < structure_destruction_score_R:
                         gamelib.debug_write("Attacking right")
-                        return (True, False, num_troops) if remaining_troops_R >= 3 else (False, False, 0)
+                        return (True, False, num_troops) if remaining_troops_R > overload else (False, False, 0)
                     else:
                         gamelib.debug_write("Attacking left")
-                        return (True, True, num_troops) if remaining_troops_L >= 3 else (False, False, 0) # If literally everything matches default to left
+                        return (True, True, num_troops) if remaining_troops_L > overload else (False, False, 0) # If literally everything matches default to left
             else:
                 gamelib.debug_write("Attacking left")
-                return (True, True, num_troops) if remaining_troops_L >= 3 else (False, False, 0)
+                return (True, True, num_troops) if remaining_troops_L >= overload else (False, False, 0)
         else:
             if survivable_R:
                 gamelib.debug_write("Attacking right")
-                return (True, False, num_troops) if remaining_troops_R >= 3 else (False, False, 0) 
+                return (True, False, num_troops) if remaining_troops_R >= overload else (False, False, 0) 
             else:
                 if game_state.get_resource(MP, 0) >= 12.0: # Attack if we have more than 12
                     return True, structure_destruction_score_L > structure_destruction_score_R, int(game_state.get_resource(MP, 0))
