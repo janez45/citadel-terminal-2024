@@ -50,7 +50,10 @@ class AlgoStrategy(gamelib.AlgoCore):
         # Defense iteration order
         self.defense_order = ["TURRET", "WALL", "FUNNEL", "SUPPORT"]
         # The index of the current defense stage we are supposed to be at
-        self.intended_defense_stage = 0 
+        self.intended_defense_stage = 0
+        self.priority_supports =  {"L": [[13, 2, SUPPORT, 0],
+                [14, 2, SUPPORT, 0]], "R": [], "C": []}
+    
         # Stores the map of formations by priority and side
         # List description: [x, y, TYPE, upgraded]
         # To understand the placements strategy, play through doing all turns 1 for LRC turret, then wall, then funnel, then support, and then playing through for turns 2-4
@@ -196,11 +199,9 @@ class AlgoStrategy(gamelib.AlgoCore):
         }
         self.support_formations = {
             1 : {
-                "L" : [
-                    [13, 2, SUPPORT, 0]
+                "L" : [     
                 ],
                 "R" : [
-                    [14, 2, SUPPORT, 1]
                 ],
                 "C": []
             },
@@ -319,6 +320,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         # Stores stockpiling
         stockpiling = self.is_enemy_stockpiling(game_state)
         stockpiling_accounted_for = False
+        priority_supports_accounted_for = False
         # Number of turns taken
         turns = 0
         # Iterates through defense moves until we have insufficient structure points to do anything or we hit an infinite loop or we reach a state where we have maxed out defense (after 4 turns)
@@ -329,6 +331,11 @@ class AlgoStrategy(gamelib.AlgoCore):
             # Stores which upgrades are priority, ["L", "R", "C"] in some order
             side_priorities = [side_denominator[0] for side_denominator in self.which_side_weaker(game_state)]
             # Determines which stage to default to, first priority is walls with two points left, then turrets if stockpiling, and then intended order
+            if self.priority_supports and not priority_supports_accounted_for:
+                move_status = self.place_defenses(game_state, side_priorities, self.priority_supports)
+                if move_status:
+                    self.priority_supports = {}
+                priority_supports_accounted_for = True
             if stockpiling and not stockpiling_accounted_for:
                 stage = "TURRET"
                 stockpiling_accounted_for = True

@@ -1,0 +1,676 @@
+Random seed: 3590954839636151475
+---------------- Starting Your Algo --------------------
+Configuring your custom algo strategy...
+Performing turn 0 of your custom algo strategy
+Performing turn 1 of your custom algo strategy
+Defense Stage: 0 Turn Iteration: 1
+Finished turret, advancing to wall
+Performing turn 2 of your custom algo strategy
+Defense Stage: 0 Turn Iteration: 1
+Finished turret, advancing to wall
+Got scored on at: [26, 12]
+All locations: [[26, 12]]
+Got scored on at: [26, 12]
+All locations: [[26, 12], [26, 12]]
+Got scored on at: [26, 12]
+All locations: [[26, 12], [26, 12], [26, 12]]
+Got scored on at: [26, 12]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12]]
+Got scored on at: [26, 12]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12]]
+Got scored on at: [26, 12]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12]]
+Got scored on at: [26, 12]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12]]
+Got scored on at: [26, 12]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12]]
+Got scored on at: [26, 12]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12]]
+Got scored on at: [26, 12]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12]]
+Performing turn 3 of your custom algo strategy
+Defense Stage: 0 Turn Iteration: 1
+Finished turret, advancing to wall
+Performing turn 4 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 1
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 1
+Finished wall, advancing to funnel
+Performing turn 5 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 1
+Finished turret, advancing to wall
+Got scored on at: [27, 13]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [27, 13]]
+Got scored on at: [27, 13]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [27, 13], [27, 13]]
+Got scored on at: [27, 13]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [27, 13], [27, 13], [27, 13]]
+Got scored on at: [27, 13]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [27, 13], [27, 13], [27, 13], [27, 13]]
+Got scored on at: [27, 13]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13]]
+Got scored on at: [27, 13]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13]]
+Got scored on at: [27, 13]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13]]
+Got scored on at: [27, 13]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13]]
+Got scored on at: [27, 13]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13]]
+Got scored on at: [27, 13]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13]]
+Got scored on at: [27, 13]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13]]
+Got scored on at: [27, 13]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13]]
+Got scored on at: [27, 13]
+All locations: [[26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [26, 12], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13], [27, 13]]
+Performing turn 6 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 1
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 1
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 1
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 2
+Finished turret, advancing to wall
+Performing turn 7 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Performing turn 8 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Performing turn 9 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Performing turn 10 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Performing turn 11 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Performing turn 12 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Performing turn 13 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Performing turn 14 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Performing turn 15 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Performing turn 16 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Performing turn 17 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Performing turn 18 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 19 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 20 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Performing turn 21 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Performing turn 22 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 23 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 24 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 25 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 26 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 27 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 28 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 29 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 30 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 31 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 32 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 33 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 34 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 35 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Performing turn 36 of your custom algo strategy
+Defense Stage: 1 Turn Iteration: 2
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 2
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 2
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 2
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 3
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 3
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 3
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 3
+Finished support, advancing to turret
+Defense Stage: 0 Turn Iteration: 4
+Finished turret, advancing to wall
+Defense Stage: 1 Turn Iteration: 4
+Finished wall, advancing to funnel
+Defense Stage: 2 Turn Iteration: 4
+Finished funnel, advancing to support
+Defense Stage: 3 Turn Iteration: 4
+Finished support, advancing to turret
+Traceback (most recent call last):
+  File "/mnt/c/Users/ianko/citadel-terminal/citadel-terminal-2024/C1GamesStarterKit-master/python-algo/algo_strategy.py", line 675, in <module>
+    algo.start()
+  File "/mnt/c/Users/ianko/citadel-terminal/citadel-terminal-2024/C1GamesStarterKit-master/python-algo/gamelib/algocore.py", line 59, in start
+    game_state_string = get_command()
+  File "/mnt/c/Users/ianko/citadel-terminal/citadel-terminal-2024/C1GamesStarterKit-master/python-algo/gamelib/util.py", line 12, in get_command
+    ret = sys.stdin.readline()
+KeyboardInterrupt
