@@ -250,7 +250,7 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def custom_strategy(self, game_state):
         # Execute setup if this is the first turn
-        if game_state.turn_number == 1:
+        if game_state.turn_number == 0:
             self.execute_setup_formation(game_state)
         else:
             # Determine if anything needs to be rebuilt
@@ -366,6 +366,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         # If an infinite loop was hit, print a statement for debuggability
         if turns == 10:
             gamelib.debug_write("HIT AN INFINITE LOOP ON DEFENSE ITERATIONS")
+        return
 
     def place_defenses(self, game_state, side_priorities, formation) -> bool:
         # Stores whether or not all of the moves so far have been succeeded
@@ -408,10 +409,12 @@ class AlgoStrategy(gamelib.AlgoCore):
                 # Spawns on bottom left so they attack right
                 spawn_coords = [13, 0]
             # Spawns scouts
-            game_state.attempt_spawn(spawn_coords[0], spawn_coords[1], SCOUT, number_of_troops)
+            game_state.attempt_spawn(SCOUT, [spawn_coords[0], spawn_coords[1]], number_of_troops)
 
     def execute_attack_calculation(self, game_state):
         # Calculate attack related stuff here
+        if game_state.get_resource(MP, 0) >= 13.0:
+            return True, True, int(game_state.get_resource(MP, 0))
         return False, False, 0
     
     def is_enemy_stockpiling(self, game_state):
