@@ -511,8 +511,10 @@ class AlgoStrategy(gamelib.AlgoCore):
         chunks = []
         prev = generate_chunk() # begin with an empty chunk for now as it won't get trampled on
         for location in path:
+            unit.x = location[0]
+            unit.y = location[1]
             attackers = game_state.get_attackers(location, 0) # who is going to attack us?
-            target = game_state.get_target(location, 0) # who will we attack?
+            target = game_state.get_target(unit) # who will we attack?
 
             if attackers == prev["attackers"] and target == prev["target"]: # If the previous frame has the same data
                 prev["numFrames"] += unit.speed # simple increment the number of frames
@@ -525,7 +527,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         # get the number of scouts we can get
         num_units = game_state.number_affordable(unit_type)
 
-        def case_1(num_mobile_units, mobile_unit: gamelib.GameUnit, attackers: "list[gamelib.GameUnit]", frames_in_range) -> "tuple[bool, int]":
+        def case_1(num_mobile_units:int, mobile_unit: gamelib.GameUnit, attackers: "list[gamelib.GameUnit]", frames_in_range: int) -> "tuple[bool, int]":
             """ 
             Returns:
                 - Whether or not the units will survive the onslaught. Errs on the side of caution
@@ -546,15 +548,15 @@ class AlgoStrategy(gamelib.AlgoCore):
             
             return can_survive_onslaught, num_units_survived
         
-        def case_2(num_mobile_units, mobile_unit: gamelib.GameUnit, target: gamelib.GameUnit, frames_in_range) -> int:
+        def case_2(num_mobile_units: int, mobile_unit: gamelib.GameUnit, target: gamelib.GameUnit, frames_in_range: int) -> int:
             """
             Returns a score based on how many structures were destroyed
             """
             damage_dealt = num_mobile_units * mobile_unit.damage_f * frames_in_range
-            structure_destroyed = target.cost if target.health <= damage_dealt else 0
+            structure_destroyed = target.cost[game_state.SP] if target.health <= damage_dealt else 0
             return structure_destroyed
 
-        def case_3(num_mobile_units, mobile_unit: gamelib.GameUnit, attackers: "list[gamelib.GameUnit]", target: gamelib.GameUnit, frames_in_range) -> "tuple[bool, int, int]":
+        def case_3(num_mobile_units: int, mobile_unit: gamelib.GameUnit, attackers: "list[gamelib.GameUnit]", target: gamelib.GameUnit, frames_in_range: int) -> "tuple[bool, int, int]":
             """
             The case where the mobile units are attacking a target while being attacked at the same time by enemy structures
             Returns:
@@ -580,28 +582,28 @@ class AlgoStrategy(gamelib.AlgoCore):
             survived = math.floor(frames_in_range * kills_per_frame) >= num_mobile_units
 
             # Has the target been destroyed?
-            target_destroyed = target.cost if damage_dealt >= target.health else 0
+            target_destroyed = target.cost[game_state.SP] if damage_dealt >= target.health else 0
 
             # If we survived, how many remain?
             num_survived = num_mobile_units - math.floor(frames_in_range * kills_per_frame) if survived else 0
 
             return survived, num_survived, target_destroyed
 
-        total_structures_destroyed = 0
+        total_structures_destroyed = int(0)
         for chunk in chunks:
             if chunk["category"] == 1:
-                survived, num_units, damage_taken = case_1(num_units, unit, chunk["attackers"], chunk["numFrames"])
+                survived, num_units = case_1(num_units, unit, chunk["attackers"], chunk["numFrames"])
                 if not survived:
-                    return False, 0, total_damage_dealt, total_structures_destroyed
+                    return False, 0, total_structures_destroyed
                 
             elif chunk["category"] == 2:
-                structure_destroyed, damage_dealt = case_2(num_units, unit, chunk["target"], chunk["numFrames"]) 
+                structure_destroyed = case_2(num_units, unit, chunk["target"], chunk["numFrames"]) 
                 total_structures_destroyed += structure_destroyed
-                total_damage_dealt += damage_dealt
+    
             else:
                 survived, num_units, structure_destroyed = case_3(num_units, unit, chunk["attackers"], chunk["target"], chunk["numFrames"])
                 if not survived:
-                    return False, 0, total_damage_dealt, total_structures_destroyed
+                    return False, 0, total_structures_destroyed
                 total_structures_destroyed += structure_destroyed
 
         return True, num_units, total_structures_destroyed
