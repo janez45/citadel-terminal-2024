@@ -410,7 +410,7 @@ class AlgoStrategy(gamelib.AlgoCore):
             # Spawns scouts
             game_state.attempt_spawn(spawn_coords[0], spawn_coords[1], SCOUT, number_of_troops)
 
-    def execute_attack_calculation(game_state):
+    def execute_attack_calculation(self, game_state):
         # Calculate attack related stuff here
         return False, False, 0
     
