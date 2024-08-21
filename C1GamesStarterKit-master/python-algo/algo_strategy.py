@@ -437,7 +437,35 @@ class AlgoStrategy(gamelib.AlgoCore):
         # Calculate attack related stuff here
         if game_state.get_resource(MP, 0) >= 12.0:
             return True, True, int(game_state.get_resource(MP, 0))
-        return False, False, 0
+        
+        num_troops = game_state.number_affordable(SCOUT)
+        attack_left_start_coordinates = [14,0]
+        attack_right_start_coordinates = [13,0]
+
+        survivable_L, remaining_troops_L, structure_destruction_score_L = self.can_breach_enemy(attack_left_start_coordinates, game_state)
+        survivable_R, remaining_troops_R, structure_destruction_score_R = self.can_breach_enemy(attack_right_start_coordinates, game_state)
+
+        if survivable_L:
+            if survivable_R:
+                if remaining_troops_L > remaining_troops_R:
+                    return True, True, num_troops
+                elif remaining_troops_L < remaining_troops_R:
+                    return True, False, num_troops
+                else:
+                    if structure_destruction_score_L > structure_destruction_score_R:
+                        return True, True, num_troops
+                    elif structure_destruction_score_L < structure_destruction_score_R:
+                        return True, False, num_troops
+                    else:
+                        return True, True, num_troops # If literally everything matches default to left
+            else:
+                return True, True, num_troops
+        else:
+            if survivable_R:
+                return True, False, num_troops
+            else:
+                return False, False, 0
+                 
     
     def is_enemy_stockpiling(self, game_state):
         # Determine if the enemy is stockpiling (set to hard MP value)
@@ -446,6 +474,138 @@ class AlgoStrategy(gamelib.AlgoCore):
             return True
         return False
     
+    def can_breach_enemy(self, start_location, game_state: gamelib.GameState) -> "tuple[bool, int, int]":
+        """
+        Overview:
+        - Get the path from a certain starting location 
+        - Identify the threats along the way <- provided by get_attackers and get_targets
+        - Generate "chunks," in which a chunk is defined as a contiguous subset of a path, such that all positions have the same target and attackers.
+        - Classify the threats and their category (only enemy attacks, only I attack, or we attack each other?)
+        - Apply the stockpiling functions.
+
+        Return:
+        - Reached destination alive?
+        - How many troops remained?
+        - How many enemy structures will be destroyed?
+        """   
+
+        # A chunk is defined as a contiguous subset of a path, such that all positions have the same
+        # target and attackers. 
+        def generate_chunk(attackers=[], target=None):
+            return {
+                "attackers": attackers,
+                "target": target,
+                "numFrames": 1
+            }
+
+        # first, get the path we could take
+        path = game_state.find_path_to_edge(start_location)
+
+        # We'll only use scouts
+        unit_type = SCOUT
+
+        # Create a mobile unit at the starting location
+        unit = gamelib.GameUnit(unit_type, game_state.config, x=start_location[0], y=start_location[1])
+
+        # Chunks stores all the different types of chunks. Only chunks with targets/threats are stored, and are categorized as 1, 2, or 3
+        chunks = []
+        prev = generate_chunk() # begin with an empty chunk for now as it won't get trampled on
+        for location in path:
+            attackers = game_state.get_attackers(location, 0) # who is going to attack us?
+            target = game_state.get_target(location, 0) # who will we attack?
+
+            if attackers == prev["attackers"] and target == prev["target"]: # If the previous frame has the same data
+                prev["numFrames"] += unit.speed # simple increment the number of frames
+            else:
+                if (len(prev["attackers"]) != 0) or (prev["target"] is not None): # If there is a target/threat
+                    prev["category"] = 1 if prev["target"] is None else 2 if len(prev["attackers"]) == 0 else 3 # categorize what kind of scenario we are in
+                    chunks.append(prev) # Add the finalized chunk
+                prev = generate_chunk(attackers=attackers, target=target) # generate the next chunk
+
+        # get the number of scouts we can get
+        num_units = game_state.number_affordable(unit_type)
+
+        def case_1(num_mobile_units, mobile_unit: gamelib.GameUnit, attackers: "list[gamelib.GameUnit]", frames_in_range) -> "tuple[bool, int]":
+            """ 
+            Returns:
+                - Whether or not the units will survive the onslaught. Errs on the side of caution
+                - If they do, at least how many will survive?
+            """
+            total_damage_per_frame = 0
+            for attacker in attackers:
+                total_damage_per_frame += attacker.damage_i
+
+            lower_bound = math.ceil(num_mobile_units * mobile_unit.health / float(total_damage_per_frame))
+
+            # Can we survive with the number of mobile units we have?
+            can_survive_onslaught = frames_in_range < lower_bound
+
+            # How many units will survive the onslaught?
+            # (Total health - total damage) / health_per_unit, ceilinged
+            num_units_survived = math.ceil((num_mobile_units * mobile_unit.health - frames_in_range * total_damage_per_frame) / float(mobile_unit.health))
+            
+            return can_survive_onslaught, num_units_survived
+        
+        def case_2(num_mobile_units, mobile_unit: gamelib.GameUnit, target: gamelib.GameUnit, frames_in_range) -> int:
+            """
+            Returns a score based on how many structures were destroyed
+            """
+            damage_dealt = num_mobile_units * mobile_unit.damage_f * frames_in_range
+            structure_destroyed = target.cost if target.health <= damage_dealt else 0
+            return structure_destroyed
+
+        def case_3(num_mobile_units, mobile_unit: gamelib.GameUnit, attackers: "list[gamelib.GameUnit]", target: gamelib.GameUnit, frames_in_range) -> "tuple[bool, int, int]":
+            """
+            The case where the mobile units are attacking a target while being attacked at the same time by enemy structures
+            Returns:
+                - If the onslaught can be survived
+                - The number of mobile units that will survive
+                - A score pertaining to how many structures were destroyed
+            """
+            # Begin by summing up the amount of damage dealt from all attackers in one frame
+            attackers_damage = 0 
+            for attacker in attackers:
+                attackers_damage += attacker.damage_i
+
+            # How many mobile units are killed in one frame? This is a float for reasons we'll see below
+            kills_per_frame = attackers_damage / float(mobile_unit.health)
+
+            damage_dealt = 0
+            for i in range(frames_in_range): # iterates from 0 to (frames_in_range - 1)
+                # We floor the number of kills per frame. Because if a turret shot enough to kill 1.7 units, it still technically killed one
+                damage_dealt += (num_mobile_units - math.floor(i * kills_per_frame)) 
+            damage_dealt *= mobile_unit.damage_f
+
+            # Did we survive?
+            survived = math.floor(frames_in_range * kills_per_frame) >= num_mobile_units
+
+            # Has the target been destroyed?
+            target_destroyed = target.cost if damage_dealt >= target.health else 0
+
+            # If we survived, how many remain?
+            num_survived = num_mobile_units - math.floor(frames_in_range * kills_per_frame) if survived else 0
+
+            return survived, num_survived, target_destroyed
+
+        total_structures_destroyed = 0
+        for chunk in chunks:
+            if chunk["category"] == 1:
+                survived, num_units, damage_taken = case_1(num_units, unit, chunk["attackers"], chunk["numFrames"])
+                if not survived:
+                    return False, 0, total_damage_dealt, total_structures_destroyed
+                
+            elif chunk["category"] == 2:
+                structure_destroyed, damage_dealt = case_2(num_units, unit, chunk["target"], chunk["numFrames"]) 
+                total_structures_destroyed += structure_destroyed
+                total_damage_dealt += damage_dealt
+            else:
+                survived, num_units, structure_destroyed = case_3(num_units, unit, chunk["attackers"], chunk["target"], chunk["numFrames"])
+                if not survived:
+                    return False, 0, total_damage_dealt, total_structures_destroyed
+                total_structures_destroyed += structure_destroyed
+
+        return True, num_units, total_structures_destroyed
+
     def which_side_weaker(self, game_state):
         # TODO: calibrate
         TURRET_POINTS = 3
