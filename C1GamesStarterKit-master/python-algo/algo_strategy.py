@@ -66,6 +66,9 @@ class AlgoStrategy(gamelib.AlgoCore):
                 "C": [
                     [13, 11, TURRET, 1],
                     [15, 11, TURRET, 1]
+                    [13, 10, TURRET, 1]
+                    [14, 10, TURRET, 1]
+                    [15, 10, TURRET, 1]
                     ]
             },
             2 : {
