@@ -63,7 +63,10 @@ class AlgoStrategy(gamelib.AlgoCore):
                 "R" : [
                     [22, 12, TURRET, 1]
                 ],
-                "C": []
+                "C": [
+                    [13, 11, TURRET, 1],
+                    [15, 11, TURRET, 1]
+                    ]
             },
             2 : {
                 "L" : [
@@ -114,32 +117,32 @@ class AlgoStrategy(gamelib.AlgoCore):
             2 : {
                 "L" : [
                     [6, 11, WALL, 0],
-                    [6, 13, WALL, 1],
-                    [5, 13, WALL, 1],
-                    [6, 12, WALL, 1],
+                    [6, 13, WALL, 0],
+                    [5, 13, WALL, 0],
+                    [6, 12, WALL, 0],
                 ],
                 "R" : [
                     [21, 11, WALL, 0],
-                    [21, 13, WALL, 1],
-                    [22, 13, WALL, 1],
-                    [31, 12, WALL, 1]
+                    [21, 13, WALL, 0],
+                    [22, 13, WALL, 0],
+                    [31, 12, WALL, 0]
                 ],
                 "C": []
             },
             3 : {
                 "L" : [
                     [6, 10, WALL, 0],
-                    [6, 11, WALL, 1]
+                    [6, 11, WALL, 0]
                 ],
                 "R" : [
                     [21, 10, WALL, 0],
-                    [21, 11, WALL, 1]
+                    [21, 11, WALL, 0]
                 ],
                 "C": []
             },
             4 : {
                 "L" : [
-                    [6, 10, WALL, 1]
+                    [6, 10, WALL, 0]
                 ],
                 "R" : [
                     [21, 10, WALL, 0]
@@ -311,20 +314,21 @@ class AlgoStrategy(gamelib.AlgoCore):
         off_cycle = False
         # Stores stockpiling
         stockpiling = self.is_enemy_stockpiling(game_state)
+        stockpiling_accounted_for = False
         # Number of turns taken
         turns = 0
         # Iterates through defense moves until we have insufficient structure points to do anything or we hit an infinite loop or we reach a state where we have maxed out defense (after 4 turns)
-        while (game_state.get_resource(0,0) >= 2) and turns < 10 and current_turn_iteration <= 4:
+        while (game_state.get_resource(0,0) >= 2) and turns < 30 and current_turn_iteration <= 4:
+            gamelib.debug_write(f"Defense Stage: {current_defense_stage} Turn Iteration: {current_turn_iteration}")
             # If only 2 structure points, we default to "WALL"
             structure_points = game_state.get_resource(0,0)
             # Stores which upgrades are priority, ["L", "R", "C"] in some order
             side_priorities = [side_denominator[0] for side_denominator in self.which_side_weaker(game_state)]
             # Determines which stage to default to, first priority is walls with two points left, then turrets if stockpiling, and then intended order
-            if structure_points == 2:
-                current_defense_stage = 1
-                stage = "WALL"
-            elif stockpiling:
+            if stockpiling and not stockpiling_accounted_for:
                 stage = "TURRET"
+                stockpiling_accounted_for = True
+                off_cycle = True
             else:
                 stage = self.defense_order[current_defense_stage]
             # Turret stage
@@ -333,24 +337,28 @@ class AlgoStrategy(gamelib.AlgoCore):
                 succeeded = self.place_defenses(game_state, side_priorities, self.turret_formations[current_turn_iteration])
                 # Points to defense stage WALL
                 current_defense_stage = 1
+                gamelib.debug_write("Finished turret, advancing to wall")
             # Wall stage
             elif stage == "WALL":
                 # Places walls
                 succeeded = self.place_defenses(game_state, side_priorities, self.wall_formations[current_turn_iteration])
                 # Points to defense stage FUNNEL
                 current_defense_stage = 2
+                gamelib.debug_write("Finished wall, advancing to funnel")
             # Funnel stage
             elif stage == "FUNNEL":
                 # Places funnel
                 succeeded = self.place_defenses(game_state, side_priorities, self.funnel_formations[current_turn_iteration])
                 # Points to defense stage SUPPORT
                 current_defense_stage = 3
+                gamelib.debug_write("Finished funnel, advancing to support")
             # Support stage
             else:
                 # Places support
                 succeeded = self.place_defenses(game_state, side_priorities, self.support_formations[current_turn_iteration])
                 # Points to defense stage TURRET
                 current_defense_stage = 0
+                gamelib.debug_write("Finished support, advancing to turret")
             # Adds that a turn was completed
             turns += 1
             # If we reset to 0, increase the turn iteration by 1 too
@@ -364,7 +372,7 @@ class AlgoStrategy(gamelib.AlgoCore):
                 self.intended_defense_stage = current_defense_stage
                 self.defense_iteration = current_turn_iteration  
         # If an infinite loop was hit, print a statement for debuggability
-        if turns == 10:
+        if turns == 30:
             gamelib.debug_write("HIT AN INFINITE LOOP ON DEFENSE ITERATIONS")
         return
 
@@ -413,7 +421,7 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def execute_attack_calculation(self, game_state):
         # Calculate attack related stuff here
-        if game_state.get_resource(MP, 0) >= 13.0:
+        if game_state.get_resource(MP, 0) >= 12.0:
             return True, True, int(game_state.get_resource(MP, 0))
         return False, False, 0
     
