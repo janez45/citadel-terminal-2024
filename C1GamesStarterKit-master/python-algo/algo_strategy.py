@@ -51,9 +51,8 @@ class AlgoStrategy(gamelib.AlgoCore):
         self.defense_order = ["TURRET", "WALL", "FUNNEL", "SUPPORT"]
         # The index of the current defense stage we are supposed to be at
         self.intended_defense_stage = 0
-        self.priority_supports =  {"L": [[13, 2, SUPPORT, 0],
-                [14, 2, SUPPORT, 0]], "R": [], "C": []}
-    
+        self.priority_supports =  [[13, 2, SUPPORT, 0],
+                [14, 2, SUPPORT, 0]]
         # Stores the map of formations by priority and side
         # List description: [x, y, TYPE, upgraded]
         # To understand the placements strategy, play through doing all turns 1 for LRC turret, then wall, then funnel, then support, and then playing through for turns 2-4
@@ -332,9 +331,13 @@ class AlgoStrategy(gamelib.AlgoCore):
             side_priorities = [side_denominator[0] for side_denominator in self.which_side_weaker(game_state)]
             # Determines which stage to default to, first priority is walls with two points left, then turrets if stockpiling, and then intended order
             if self.priority_supports and not priority_supports_accounted_for:
-                move_status = self.place_defenses(game_state, side_priorities, self.priority_supports)
-                if move_status:
-                    self.priority_supports = {}
+                for defense_tuple in self.priority_supports:
+                    status = game_state.attempt_spawn(defense_tuple[2], [defense_tuple[0], defense_tuple[1]], 1)
+                    if status:
+                        # Removes thing from list of defenses
+                        self.priority_supports.remove(defense_tuple)
+                        # Appends [x, y, TYPE, upgraded]
+                        self.built_structures.append([defense_tuple[0], defense_tuple[1], defense_tuple[2], defense_tuple[3]])
                 priority_supports_accounted_for = True
             if stockpiling and not stockpiling_accounted_for:
                 stage = "TURRET"
