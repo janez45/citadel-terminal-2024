@@ -1,5 +1,6 @@
 import unittest
 import json
+import gamelib
 from .game_state import GameState
 from .unit import GameUnit
 
