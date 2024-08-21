@@ -266,7 +266,8 @@ class AlgoStrategy(gamelib.AlgoCore):
             if structure_points_after_rebuild > 1:
                 self.execute_defense(game_state)
         # Execute attack
-        self.execute_attack(game_state)
+        if game_state.turn_number != 0:
+            self.execute_attack(game_state)
     
     def execute_setup_formation(self, game_state):
         # Setup locations for all turrets
@@ -573,7 +574,7 @@ class AlgoStrategy(gamelib.AlgoCore):
             kills_per_frame = attackers_damage / float(mobile_unit.health)
 
             damage_dealt = 0
-            for i in range(frames_in_range): # iterates from 0 to (frames_in_range - 1)
+            for i in range(math.floor(frames_in_range)): # iterates from 0 to (frames_in_range - 1)
                 # We floor the number of kills per frame. Because if a turret shot enough to kill 1.7 units, it still technically killed one
                 damage_dealt += (num_mobile_units - math.floor(i * kills_per_frame)) 
             damage_dealt *= mobile_unit.damage_f
