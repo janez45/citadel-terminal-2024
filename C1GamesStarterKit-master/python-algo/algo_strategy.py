@@ -58,27 +58,28 @@ class AlgoStrategy(gamelib.AlgoCore):
         self.turret_formations = {
             1 : {
                 "L" : [
-                    [5, 12, TURRET, 1]   
+                    [5, 12, TURRET, 1],
+                    [5, 11, TURRET, 1]   
                 ],
                 "R" : [
-                    [22, 12, TURRET, 1]
+                    [22, 12, TURRET, 1],
+                    [22, 11, TURRET, 1]
                 ],
                 "C": [
                     [13, 11, TURRET, 1],
                     [15, 11, TURRET, 1]
-                    [13, 10, TURRET, 1]
-                    [14, 10, TURRET, 1]
-                    [15, 10, TURRET, 1]
                     ]
             },
             2 : {
                 "L" : [
-                    [5, 11, TURRET, 1]
                 ],
                 "R" : [
-                    [22, 11, TURRET, 1]
                 ],
-                "C": []
+                "C": [
+                    [13, 10, TURRET, 1],
+                    [14, 10, TURRET, 1],
+                    [15, 10, TURRET, 1]
+                ]
             },
             3 : {
                 "L" : [
