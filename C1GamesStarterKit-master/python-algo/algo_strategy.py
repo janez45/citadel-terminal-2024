@@ -266,7 +266,8 @@ class AlgoStrategy(gamelib.AlgoCore):
             if structure_points_after_rebuild > 1:
                 self.execute_defense(game_state)
         # Execute attack
-        self.execute_attack(game_state)
+        if game_state.turn_number != 0:
+            self.execute_attack(game_state)
     
     def execute_setup_formation(self, game_state):
         # Setup locations for all turrets
@@ -435,9 +436,62 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def execute_attack_calculation(self, game_state):
         # Calculate attack related stuff here
-        if game_state.get_resource(MP, 0) >= 12.0:
-            return True, True, int(game_state.get_resource(MP, 0))
-        return False, False, 0
+
+        num_troops = game_state.number_affordable(SCOUT) # check how many troops are affordable
+
+        # Define the left and right start coordinates
+        attack_left_start_coordinates = [14,0]
+        attack_right_start_coordinates = [13,0]
+
+        # See how many structure points the enemy has
+        enemy_structure_points = game_state.get_resource(SP, 1)
+
+        # If they have over a certain amount, overload by a certain number of scouts in case they place another turret
+        overload = 5 if enemy_structure_points >= 8 else 3 if enemy_structure_points >= 3 else 0
+
+        # Get information about attacking each side
+        survivable_L, remaining_troops_L, structure_destruction_score_L = self.can_breach_enemy(attack_left_start_coordinates, game_state)
+        survivable_R, remaining_troops_R, structure_destruction_score_R = self.can_breach_enemy(attack_right_start_coordinates, game_state)
+
+        gamelib.debug_write(f"Number of troops: {num_troops}")
+        gamelib.debug_write(f"Left survivable? {survivable_L}  Remaining troops: {remaining_troops_L}  Destruction score: {structure_destruction_score_L}")
+        gamelib.debug_write(f"Right survivable? {survivable_R}  Remaining troops: {remaining_troops_R}  Destruction score: {structure_destruction_score_R}")
+
+        # Attack regardless if we can deploy more than 12 troops (at least one every three turns)
+        if game_state.get_resource(MP, 0) >= 15.0:
+            gamelib.debug_write("Attacking left")
+            return True, structure_destruction_score_L > structure_destruction_score_R, int(game_state.get_resource(MP, 0))
+        
+        # Decision flow based in this order of priority: Can you survive, number of troops surviving, the number of structures destroyed
+        if survivable_L:
+            if survivable_R:
+                if remaining_troops_L > remaining_troops_R:
+                    gamelib.debug_write("Attacking left")
+                    return (True, True, num_troops) if remaining_troops_L > overload else (False, False, 0)
+                elif remaining_troops_L < remaining_troops_R:
+                    gamelib.debug_write("Attacking right")
+                    return (True, False, num_troops) if remaining_troops_R > overload else (False, False, 0)
+                else:
+                    if structure_destruction_score_L > structure_destruction_score_R:
+                        gamelib.debug_write("Attacking left")
+                        return (True, True, num_troops) if remaining_troops_L > overload else (False, False, 0)
+                    elif structure_destruction_score_L < structure_destruction_score_R:
+                        gamelib.debug_write("Attacking right")
+                        return (True, False, num_troops) if remaining_troops_R > overload else (False, False, 0)
+                    else:
+                        gamelib.debug_write("Attacking left")
+                        return (True, True, num_troops) if remaining_troops_L > overload else (False, False, 0) # If literally everything matches default to left
+            else:
+                gamelib.debug_write("Attacking left")
+                return (True, True, num_troops) if remaining_troops_L >= overload else (False, False, 0)
+        else:
+            if survivable_R:
+                gamelib.debug_write("Attacking right")
+                return (True, False, num_troops) if remaining_troops_R >= overload else (False, False, 0) 
+            else:
+                gamelib.debug_write("Not Attacking")
+                return False, False, 0
+              
     
     def is_enemy_stockpiling(self, game_state):
         # Determine if the enemy is stockpiling (set to hard MP value)
@@ -446,6 +500,191 @@ class AlgoStrategy(gamelib.AlgoCore):
             return True
         return False
     
+    def can_breach_enemy(self, start_location, game_state: gamelib.GameState) -> "tuple[bool, int, int]":
+        """
+        Overview:
+        - Get the path from a certain starting location 
+        - Identify the threats along the way <- provided by get_attackers and get_targets
+        - Generate "chunks," in which a chunk is defined as a contiguous subset of a path, such that all positions have the same target and attackers.
+        - Classify the threats and their category (only enemy attacks, only I attack, or we attack each other?)
+        - Apply the stockpiling functions.
+
+        Return:
+        - Reached destination alive?
+        - How many troops remained?
+        - How many enemy structures will be destroyed?
+        """   
+
+        # How much support would our mobile units receive?
+        def add_support(mobile_unit) -> gamelib.GameUnit:
+            mobile_unit_location = [mobile_unit.x] + [mobile_unit.y]
+            possible_support_locations = game_state.game_map.get_locations_in_range(mobile_unit_location, 6)
+            for location in possible_support_locations:
+                unit = game_state.contains_stationary_unit(location)
+                if (unit is not False and unit.unit_type == SUPPORT) and unit.player_index == 0:
+                    if unit.shieldRange >= game_state.game_map.distance_between_locations(mobile_unit_location, location):
+                        mobile_unit.health += unit.shieldPerUnit       
+            return mobile_unit
+
+
+        # A chunk is defined as a contiguous subset of a path, such that all positions have the same
+        # target and attackers. 
+        def generate_chunk(attackers=[], target=None, locations=[]):
+            return {
+                "attackers": attackers,
+                "target": target,
+                "numFrames": 1,
+                "locations": locations
+            }
+
+        # first, get the path we could take
+        path = game_state.find_path_to_edge(start_location)
+
+        # We'll only use scouts
+        unit_type = SCOUT
+
+        # Create a mobile unit at the starting location
+        unit = gamelib.GameUnit(unit_type, game_state.config, x=start_location[0], y=start_location[1], player_index=0)
+        unit = add_support(unit)
+        gamelib.debug_write("About the unit:", unit)
+
+        # Chunks stores all the different types of chunks. Only chunks with targets/threats are stored, and are categorized as 1, 2, or 3
+        chunks = []
+        prev = generate_chunk() # begin with an empty chunk for now as it won't get trampled on
+        for location in path:
+            unit.x = location[0]
+            unit.y = location[1]
+            attackers = game_state.get_attackers(location, 0) # who is going to attack us?
+            target = game_state.get_target(unit) # who will we attack?
+
+            if attackers == prev["attackers"] and target == prev["target"]: # If the previous frame has the same data
+                prev["numFrames"] += unit.speed # simple increment the number of frames
+                prev["locations"].append(location) # add the location
+            else:
+                if (len(prev["attackers"]) != 0) or (prev["target"] is not None): # If there is a target/threat
+                    prev["category"] = 1 if prev["target"] is None else 2 if len(prev["attackers"]) == 0 else 3 # categorize what kind of scenario we are in
+                    chunks.append(prev) # Add the finalized chunk
+                prev = generate_chunk(attackers=attackers, target=target, locations=[location]) # generate the next chunk
+
+        # get the number of scouts we can get
+        num_units = game_state.number_affordable(unit_type)
+
+        def case_1(num_mobile_units:int, mobile_unit: gamelib.GameUnit, attackers: "list[gamelib.GameUnit]", frames_in_range: int) -> "tuple[bool, int]":
+            """ 
+            The case where structures can attack mobile units but not the other way around.
+            Returns:
+                - Whether or not the units will survive the onslaught. Errs on the side of caution
+                - If they do, at least how many will survive?
+            """
+            total_damage_per_frame = 0
+            for attacker in attackers:
+                total_damage_per_frame += attacker.damage_i
+
+            gamelib.debug_write(f"Case 1: We're taking {total_damage_per_frame} damage per frame")
+
+            lower_bound = math.ceil(num_mobile_units * mobile_unit.health / float(total_damage_per_frame))
+            gamelib.debug_write(f"Case 1: Number of mobile units: {num_mobile_units} Health per unit: {mobile_unit.health}")
+            gamelib.debug_write(f"Case 1: We're taking at least {lower_bound} frames to die")
+
+            # Can we survive with the number of mobile units we have?
+            can_survive_onslaught = frames_in_range <= lower_bound
+            gamelib.debug_write(f"Case 1: Lower bound: {lower_bound} Frames in range: {frames_in_range}")
+
+            # How many units will survive the onslaught?
+            # (Total health - total damage) / health_per_unit, ceilinged
+            num_units_survived = math.ceil((num_mobile_units * mobile_unit.health - frames_in_range * total_damage_per_frame) / float(mobile_unit.health))
+            gamelib.debug_write(f"Case 1: Number survived: {num_units_survived}")
+
+            return can_survive_onslaught, num_units_survived
+        
+        def case_2(num_mobile_units: int, mobile_unit: gamelib.GameUnit, target: gamelib.GameUnit, frames_in_range: int) -> int:
+            """
+            The case where mobile units can attack structures but not the other way around
+            Returns a score based on how many structures were destroyed
+            """
+            damage_dealt = num_mobile_units * mobile_unit.damage_f * frames_in_range
+            structure_destroyed = target.cost[game_state.SP] if target.health <= damage_dealt else 0
+
+            gamelib.debug_write(f"Case 2: Damage dealt: {damage_dealt}, Target halth: {target.health}")
+            return structure_destroyed
+
+        def case_3(num_mobile_units: int, mobile_unit: gamelib.GameUnit, attackers: "list[gamelib.GameUnit]", target: gamelib.GameUnit, path: "list[list[int]]", frames_in_range: int) -> "tuple[bool, int, int]":
+            """
+            The case where the mobile units are attacking a target while being attacked at the same time by enemy structures
+            Returns:
+                - If the onslaught can be survived
+                - The number of mobile units that will survive
+                - A score pertaining to how many structures were destroyed
+            """
+
+            gamelib.debug_write("Path:",path)
+            # Begin by summing up the amount of damage dealt from all attackers in one frame
+            attackers_damage = 0 
+            for attacker in attackers:
+                attackers_damage += attacker.damage_i
+
+            gamelib.debug_write(f"Case 3: We're taking {attackers_damage} damage per frame")
+
+            # How many mobile units are killed in one frame? This is a float for reasons we'll see below
+            kills_per_frame = attackers_damage / float(mobile_unit.health)
+            gamelib.debug_write(f"Case 3: Kills per frame: {kills_per_frame}")
+
+            # damage_dealt is the amount of damage we'll do
+            damage_dealt = 0
+            for i, location in enumerate(path): # iterates from 0 to (frames_in_range - 1)
+                gamelib.debug_write("location type:", type(location))
+                mobile_unit.x = location[0]
+                mobile_unit.y = location[1]
+                # We floor the number of kills per frame. Because if a turret shot enough to kill 1.7 units, it still technically killed one
+                damage_dealt += (mobile_unit.damage_f * (num_mobile_units - math.floor(i * kills_per_frame))) 
+
+                if damage_dealt >= target.health: # If you kill the target
+                    # How much did you achieve?
+                    target_destroyed = target.cost[game_state.SP] 
+
+                    # Did you survive?
+                    survived = math.floor((i+1) * kills_per_frame) >= num_mobile_units
+
+                    # How many survived?
+                    num_survived = num_mobile_units - math.floor(frames_in_range * kills_per_frame) if survived else 0
+
+                    # Now, send into another case 3 to attack the next target
+                    survived_after, num_survived_after, damage_after = case_3(num_survived, mobile_unit, game_state.get_attackers(location, 0), game_state.get_target(mobile_unit), path[i:], len(path[i:]))
+                    return survived_after, num_survived_after, damage_after + target_destroyed
+
+            # Did we survive?
+            survived = math.floor(frames_in_range * kills_per_frame) >= num_mobile_units
+
+            # Has the target been destroyed?
+            target_destroyed = target.cost[game_state.SP] if damage_dealt >= target.health else 0
+            gamelib.debug_write(f"Case 3: Target health: {target.health}")
+
+            # If we survived, how many remain?
+            num_survived = num_mobile_units - math.floor(frames_in_range * kills_per_frame) if survived else 0
+            gamelib.debug_write("Number survived:", num_survived)
+
+            return survived, num_survived, target_destroyed
+
+        total_structures_destroyed = 0
+        for chunk in chunks:
+            gamelib.debug_write(chunk)
+            if chunk["category"] == 1:
+                survived, num_units = case_1(num_units, unit, chunk["attackers"], chunk["numFrames"])
+                if not survived:
+                    return False, 0, total_structures_destroyed
+                
+            elif chunk["category"] == 2:
+                structure_destroyed = case_2(num_units, unit, chunk["target"], chunk["numFrames"]) 
+                total_structures_destroyed += structure_destroyed
+    
+            else:
+                survived, num_units, structure_destroyed = case_3(num_units, unit, chunk["attackers"], chunk["target"], chunk["locations"], chunk["numFrames"])
+                if not survived:
+                    return False, 0, total_structures_destroyed
+                total_structures_destroyed += structure_destroyed
+
+        return True, num_units, total_structures_destroyed
+
     def which_side_weaker(self, game_state):
         # TODO: calibrate
         TURRET_POINTS = 3
@@ -476,12 +715,13 @@ class AlgoStrategy(gamelib.AlgoCore):
                     if is_within_trapezoid(location, trapezoid):
                         units = game_state.game_map[x, y]
                         for unit in units:
-                            if unit.unit_type == 'TURRET':
-                                score += TURRET_POINTS*unit.health
-                            elif unit.unit_type == 'UPGRADED_TURRET':
-                                score += UPGRADED_TURRET_POINTS*unit.health
-                            elif unit.unit_type == 'WALL':
-                                score += WALL_POINTS*unit.health
+                            score += (unit.cost[0] * unit.health + unit.damage_i)
+                            # if unit.unit_type == TURRET:
+                            #     score += (TURRET_POINTS*unit.health + unit.damage_i)
+                            # elif unit.unit_type == 'UPGRADED_TURRET':
+                            #     score += UPGRADED_TURRET_POINTS*unit.health
+                            # elif unit.unit_type == 'WALL':
+                            #     score += WALL_POINTS*unit.health                         
             return score
 
         # Define trapezoid vertices for left and right and center sides
