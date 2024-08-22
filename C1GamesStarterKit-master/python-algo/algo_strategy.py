@@ -436,13 +436,20 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def execute_attack_calculation(self, game_state):
         # Calculate attack related stuff here
-        num_troops = game_state.number_affordable(SCOUT)
+
+        num_troops = game_state.number_affordable(SCOUT) # check how many troops are affordable
+
+        # Define the left and right start coordinates
         attack_left_start_coordinates = [14,0]
         attack_right_start_coordinates = [13,0]
 
+        # See how many structure points the enemy has
         enemy_structure_points = game_state.get_resource(SP, 1)
-        overload = 6 if enemy_structure_points >= 8 else 3 if enemy_structure_points >= 3 else 0
 
+        # If they have over a certain amount, overload by a certain number of scouts in case they place another turret
+        overload = 5 if enemy_structure_points >= 8 else 3 if enemy_structure_points >= 3 else 0
+
+        # Get information about attacking each side
         survivable_L, remaining_troops_L, structure_destruction_score_L = self.can_breach_enemy(attack_left_start_coordinates, game_state)
         survivable_R, remaining_troops_R, structure_destruction_score_R = self.can_breach_enemy(attack_right_start_coordinates, game_state)
 
@@ -450,10 +457,12 @@ class AlgoStrategy(gamelib.AlgoCore):
         gamelib.debug_write(f"Left survivable? {survivable_L}  Remaining troops: {remaining_troops_L}  Destruction score: {structure_destruction_score_L}")
         gamelib.debug_write(f"Right survivable? {survivable_R}  Remaining troops: {remaining_troops_R}  Destruction score: {structure_destruction_score_R}")
 
-        if game_state.get_resource(MP, 0) >= 12.0:
+        # Attack regardless if we can deploy more than 12 troops (at least one every three turns)
+        if game_state.get_resource(MP, 0) >= 15.0:
             gamelib.debug_write("Attacking left")
-            return True, True, int(game_state.get_resource(MP, 0))
+            return True, structure_destruction_score_L > structure_destruction_score_R, int(game_state.get_resource(MP, 0))
         
+        # Decision flow based in this order of priority: Can you survive, number of troops surviving, the number of structures destroyed
         if survivable_L:
             if survivable_R:
                 if remaining_troops_L > remaining_troops_R:
@@ -480,11 +489,8 @@ class AlgoStrategy(gamelib.AlgoCore):
                 gamelib.debug_write("Attacking right")
                 return (True, False, num_troops) if remaining_troops_R >= overload else (False, False, 0) 
             else:
-                if game_state.get_resource(MP, 0) >= 12.0: # Attack if we have more than 12
-                    return True, structure_destruction_score_L > structure_destruction_score_R, int(game_state.get_resource(MP, 0))
-                else:
-                    gamelib.debug_write("Not Attacking")
-                    return False, False, 0
+                gamelib.debug_write("Not Attacking")
+                return False, False, 0
               
     
     def is_enemy_stockpiling(self, game_state):
@@ -553,7 +559,7 @@ class AlgoStrategy(gamelib.AlgoCore):
 
             if attackers == prev["attackers"] and target == prev["target"]: # If the previous frame has the same data
                 prev["numFrames"] += unit.speed # simple increment the number of frames
-                prev["locations"].append(location)
+                prev["locations"].append(location) # add the location
             else:
                 if (len(prev["attackers"]) != 0) or (prev["target"] is not None): # If there is a target/threat
                     prev["category"] = 1 if prev["target"] is None else 2 if len(prev["attackers"]) == 0 else 3 # categorize what kind of scenario we are in
@@ -565,6 +571,7 @@ class AlgoStrategy(gamelib.AlgoCore):
 
         def case_1(num_mobile_units:int, mobile_unit: gamelib.GameUnit, attackers: "list[gamelib.GameUnit]", frames_in_range: int) -> "tuple[bool, int]":
             """ 
+            The case where structures can attack mobile units but not the other way around.
             Returns:
                 - Whether or not the units will survive the onslaught. Errs on the side of caution
                 - If they do, at least how many will survive?
@@ -592,6 +599,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         
         def case_2(num_mobile_units: int, mobile_unit: gamelib.GameUnit, target: gamelib.GameUnit, frames_in_range: int) -> int:
             """
+            The case where mobile units can attack structures but not the other way around
             Returns a score based on how many structures were destroyed
             """
             damage_dealt = num_mobile_units * mobile_unit.damage_f * frames_in_range
@@ -621,6 +629,7 @@ class AlgoStrategy(gamelib.AlgoCore):
             kills_per_frame = attackers_damage / float(mobile_unit.health)
             gamelib.debug_write(f"Case 3: Kills per frame: {kills_per_frame}")
 
+            # damage_dealt is the amount of damage we'll do
             damage_dealt = 0
             for i, location in enumerate(path): # iterates from 0 to (frames_in_range - 1)
                 gamelib.debug_write("location type:", type(location))
@@ -706,12 +715,13 @@ class AlgoStrategy(gamelib.AlgoCore):
                     if is_within_trapezoid(location, trapezoid):
                         units = game_state.game_map[x, y]
                         for unit in units:
-                            if unit.unit_type == 'TURRET':
-                                score += TURRET_POINTS*unit.health
-                            elif unit.unit_type == 'UPGRADED_TURRET':
-                                score += UPGRADED_TURRET_POINTS*unit.health
-                            elif unit.unit_type == 'WALL':
-                                score += WALL_POINTS*unit.health
+                            score += (unit.cost[0] * unit.health + unit.damage_i)
+                            # if unit.unit_type == TURRET:
+                            #     score += (TURRET_POINTS*unit.health + unit.damage_i)
+                            # elif unit.unit_type == 'UPGRADED_TURRET':
+                            #     score += UPGRADED_TURRET_POINTS*unit.health
+                            # elif unit.unit_type == 'WALL':
+                            #     score += WALL_POINTS*unit.health                         
             return score
 
         # Define trapezoid vertices for left and right and center sides
