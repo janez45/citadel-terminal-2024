@@ -5,7 +5,7 @@ This repository contains the source code and documentation for our algorithm tha
 
 We developed an end-to-end algorithm in Python for a competitive tower-defense game tournament. See https://terminal.c1games.com/rules for in-depth information about the game. 
 
-Our algorithm focused on strategic pathfinding, attack optimization, and calculating our defense weaknesses for resource allocation. We leveraged advanced techniques in discrete mathematics, combinatorics, and summation to maximize our team's scoring potential.
+Our algorithm focused on strategic pathfinding, attack optimization, and calculating our weak points to defend accordingly. We leveraged advanced techniques in discrete mathematics, combinatorics, and summation to maximize our team's scoring potential.
 
 See `python-algo/algo_strategy.py` for all logic behind the algorithm.
 
